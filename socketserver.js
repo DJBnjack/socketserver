@@ -5,7 +5,6 @@ var request = require('request');
 // IO adapter to get messages from other senders
 io.adapter(redis({ host: 'redis.core.djbnjack.svc.tutum.io', port: 6379 }));
 
-
 var processJson = "";
 var updateProcesses = function(callback) {
     var url = "http://processes-api.core.djbnjack.svc.tutum.io:3000/processes";
@@ -38,7 +37,7 @@ io.on('connection', function(socket) {
 io.on('updated', function(msg){
     console.log('updated: ' + msg);
     if (msg == 'processes') {
-        updateProcesses((updatedProcesses) => io.emit('processes', updatedProcesses));
+        updateProcesses((updatedProcesses) => processes.emit('processes', updatedProcesses));
     }
 });
 
