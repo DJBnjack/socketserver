@@ -1,4 +1,5 @@
 var io = require('socket.io')(3210);
+var client = require('socket.io-client')('http://localhost:3210');
 var redis = require('socket.io-redis');
 var request = require('request');
 
@@ -34,13 +35,13 @@ io.on('connection', function(socket) {
 	console.log('new system connection');
 });
 
-io.on('updated', function(msg){
+client.on('updated', function(msg){
     console.log('updated: ' + msg);
     if (msg == 'processes') {
         updateProcesses((updatedProcesses) => processes.emit('processes', updatedProcesses));
     }
 });
 
-io.on('system', function(msg){
+client.on('system', function(msg){
     console.log('system: ' + msg);
 });
