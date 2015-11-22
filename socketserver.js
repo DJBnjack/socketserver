@@ -6,7 +6,7 @@ var request = require('request');
 // IO adapter to get messages from other senders
 io.adapter(redis({ host: 'redis.core.djbnjack.svc.tutum.io', port: 6379 }));
 
-var processJson = "";
+var processes = [];
 var updateProcesses = function(callback) {
     var url = "http://processes-api.api-layer.djbnjack.svc.tutum.io:3000/processes";
     // var url = "http://localhost:3000/processes";
@@ -17,18 +17,18 @@ var updateProcesses = function(callback) {
             console.log('Invalid Status Code Returned:', response.statusCode);
         }
     
-        processJson = body;
-        if (callback != null) callback(processJson);
+        processes = body;
+        if (callback != null) callback(processes);
     });    
 }
 
 // Initial load of processes
 updateProcesses();
 
-var processes = io.of('/processes');
-processes.on('connection', function(socket){
+var processes_socket = io.of('/processes');
+processes_socket.on('connection', function(socket){
 	console.log('new process connection');
-	socket.emit('processes', processJson);
+	socket.emit('processes', processes);
 });
 
 io.on('connection', function(socket) {
@@ -38,7 +38,7 @@ io.on('connection', function(socket) {
 client.on('updated', function(msg){
     console.log('updated: ' + msg);
     if (msg == 'processes') {
-        updateProcesses((updatedProcesses) => processes.emit('processes', updatedProcesses));
+        updateProcesses((updatedProcesses) => processes_socket.emit('processes', updatedProcesses));
     }
 });
 
