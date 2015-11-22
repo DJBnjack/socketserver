@@ -8,7 +8,7 @@ io.adapter(redis({ host: 'redis.core.djbnjack.svc.tutum.io', port: 6379 }));
 
 var processJson = "";
 var updateProcesses = function(callback) {
-    var url = "http://processes-api.core.djbnjack.svc.tutum.io:3000/processes";
+    var url = "http://processes-api.api-layer.djbnjack.svc.tutum.io:3000/processes";
     // var url = "http://localhost:3000/processes";
     request(url, function (error, response, body) {
         if(error){
