@@ -1,6 +1,4 @@
 var io = require('socket.io')(3210);
-var client = require('socket.io-client')('http://localhost:3210');
-var redis = require('socket.io-redis');
 var request = require('request');
 
 var redis_url = 'redis.core.djbnjack.svc.tutum.io:6379';
@@ -13,9 +11,6 @@ var url_collection = {
     'statsd_url': statsd_url
 }
 
-// IO adapter to get messages from other senders
-io.adapter(redis(redis_url));
-
 var processes_socket = io.of('/processes');
 processes_socket.on('connection', function(socket){
 	console.log('new process connection');
@@ -24,16 +19,18 @@ processes_socket.on('connection', function(socket){
 
 io.on('connection', function(socket) {
 	console.log('new system connection');
-    io.emit('urls', url_collection);
+    socket.emit('urls', url_collection);
+
+    socket.on('updated', function(msg){
+        console.log('updated: ' + msg);
+        if (msg == 'processes') {
+            processes_socket.emit('updated', 'all');
+        }
+    });
+
+    socket.on('system', function(msg){
+        console.log('system: ' + msg);
+    });
 });
 
-client.on('updated', function(msg){
-    console.log('updated: ' + msg);
-    if (msg == 'processes') {
-        processes_socket.emit('updated', 'all');
-    }
-});
 
-client.on('system', function(msg){
-    console.log('system: ' + msg);
-});
