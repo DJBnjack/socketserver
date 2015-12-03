@@ -3,7 +3,9 @@ var request = require('request');
 
 var neo4j_url = 'http://neo4j.core.djbnjack.svc.tutum.io:8080';
 var statsd_url = 'http://statsd.core.djbnjack.svc.tutum.io:8081';
-var processes_url = "http://processes-api.api-layer.djbnjack.svc.tutum.io:3000/processes"; 
+// var processes_url = "http://processes-api.api-layer.djbnjack.svc.tutum.io:3000/processes"; 
+var processes_url = "http://processes-api-1.api-layer.djbnjack.cont.tutum.io:3000/processes"
+// var processes_url = "http://localhost:3000/processes";
 var url_collection = {
     'neo4j_url': neo4j_url,
     'statsd_url': statsd_url
